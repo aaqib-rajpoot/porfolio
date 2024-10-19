@@ -1,0 +1,296 @@
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+:root {
+    --main-color: #00ffff;
+    --accent-color: #80ffff; /* Lighter cyan for hover effect */
+    --bg-color: #000033;
+    --text-color: #ffffff;
+    --chip-color: rgba(26, 26, 26, 0.8);
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'VT323', monospace;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    overflow: hidden;
+}
+
+#universe {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#stars {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1231630/stars.png') repeat top center;
+    z-index: -1;
+}
+
+#circuit-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, var(--chip-color) 25%, transparent 25%),
+                linear-gradient(-45deg, var(--chip-color) 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, var(--chip-color) 75%),
+                linear-gradient(-45deg, transparent 75%, var(--chip-color) 75%);
+    background-size: 20px 20px;
+    opacity: 0.1;
+    z-index: -1;
+}
+
+#navigation {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.nav-item {
+    margin: 0 10px;
+    padding: 10px 20px;
+    background-color: rgba(0, 255, 255, 0.2); /* Transparent cyan */
+    color: var(--main-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid var(--main-color);
+    border-radius: 5px;
+}
+
+.nav-item:hover {
+    background-color: rgba(128, 255, 255, 0.3); /* Slightly more opaque, lighter cyan */
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 10px var(--accent-color); /* Add a glow effect on hover */
+}
+
+#content-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: 80%;
+    max-width: 1200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#content-area {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.planet {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.chip {
+    background: var(--chip-color);
+    border-radius: 10px;
+    border: 2px solid var(--main-color);
+    box-shadow: 0 0 20px var(--main-color);
+    max-width: 600px;
+    width: 100%;
+    max-height: 80vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.window-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: var(--main-color);
+    cursor: pointer;
+}
+
+.window-title {
+    color: var(--bg-color);
+    font-weight: bold;
+}
+
+.close-btn {
+    color: var(--bg-color);
+    font-size: 20px;
+    line-height: 1;
+}
+
+.mission-content {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#mission-info {
+    margin: 0;
+    color: var(--text-color);
+    text-align: center;
+}
+
+.progress-beam {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 5px;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.progress-beam::before {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: var(--main-color);
+    border-radius: 50%;
+    box-shadow: 0 0 5px var(--main-color), 0 0 10px var(--main-color);
+    animation: snakeProgress 8s linear infinite;
+    top: var(--beam-y, 0);
+    left: var(--beam-x, 0);
+}
+
+.progress-beam::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        linear-gradient(to right, var(--main-color) 50%, transparent 50%) top/200% 2px no-repeat,
+        linear-gradient(to bottom, var(--main-color) 50%, transparent 50%) right/2px 200% no-repeat,
+        linear-gradient(to left, var(--main-color) 50%, transparent 50%) bottom/200% 2px no-repeat,
+        linear-gradient(to top, var(--main-color) 50%, transparent 50%) left/2px 200% no-repeat;
+    animation: progress 4s linear infinite;
+}
+
+@keyframes snakeProgress {
+    0% { top: 0; left: 0; width: 10px; height: 10px; }
+    12.5% { top: 0; left: calc(100% - 10px); width: 10px; height: 10px; }
+    25% { top: 0; left: calc(100% - 10px); width: 10px; height: calc(100% - 10px); }
+    37.5% { top: calc(100% - 10px); left: calc(100% - 10px); width: 10px; height: calc(100% - 10px); }
+    50% { top: calc(100% - 10px); left: 0; width: calc(100% - 10px); height: 10px; }
+    62.5% { top: 0; left: 0; width: calc(100% - 10px); height: 10px; }
+    75% { top: 0; left: 0; width: 10px; height: calc(100% - 10px); }
+    87.5% { top: calc(100% - 10px); left: 0; width: 10px; height: calc(100% - 10px); }
+    100% { top: calc(100% - 10px); left: calc(100% - 10px); width: calc(100% - 10px); height: calc(100% - 10px); }
+}
+
+@keyframes progress {
+    0% {
+        background-position: 200% 0, 100% 200%, -100% 100%, 0 -100%;
+    }
+    100% {
+        background-position: -200% 0, 100% -200%, 100% 100%, 0 100%;
+    }
+}
+
+#loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--bg-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.loading-text {
+    font-size: 2em;
+    color: var(--main-color);
+    margin-bottom: 20px;
+}
+
+.loading-beam {
+    width: 0;
+    height: 2px;
+    background-color: var(--main-color);
+    box-shadow: 0 0 10px var(--main-color), 0 0 20px var(--main-color);
+    transition: width 0.5s ease-out;
+}
+
+#info-panel {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 250px;
+    background-color: rgba(0, 0, 51, 0.7);
+    border-radius: 5px;
+    z-index: 1000;
+    border: 1px solid var(--main-color);
+    box-shadow: 0 0 10px var(--main-color), 0 0 20px var(--main-color);
+    animation: glow 2s infinite alternate;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+@keyframes glow {
+    from {
+        box-shadow: 0 0 10px var(--main-color), 0 0 20px var(--main-color);
+    }
+    to {
+        box-shadow: 0 0 15px var(--main-color), 0 0 30px var(--main-color);
+    }
+}
+
+.analog-beam {
+    position: fixed;
+    top: 0;
+    width: 2px;
+    height: 100vh;
+    background-color: var(--main-color);
+    opacity: 0;
+    z-index: 100;
+    box-shadow: 0 0 10px var(--main-color), 0 0 20px var(--main-color);
+}
+
+#analog-beam-left {
+    left: 0;
+}
+
+#analog-beam-right {
+    right: 0;
+}
+
+@keyframes moveBeamLeft {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(calc(50vw - 1px)); }
+}
+
+@keyframes moveBeamRight {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(calc(-50vw + 1px)); }
+}

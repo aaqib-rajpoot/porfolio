@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Circuit Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="loading-screen">
+        <div class="loading-text">INITIALIZING</div>
+        <div class="loading-beam"></div>
+    </div>
+    <div id="universe">
+        <div id="stars"></div>
+        <div id="circuit-overlay"></div>
+        <div id="analog-beam-left" class="analog-beam"></div>
+        <div id="analog-beam-right" class="analog-beam"></div>
+        
+        <nav id="navigation">
+            <div class="nav-item" data-planet="about">About</div>
+            <div class="nav-item" data-planet="projects">Projects</div>
+            <div class="nav-item" data-planet="skills">Skills</div>
+            <div class="nav-item" data-planet="contact">Contact</div>
+            <div class="nav-item" data-planet="blog">Blog</div>
+        </nav>
+
+        <div id="content-container">
+            <div id="content-area">
+                <div class="planet" id="about">
+                    <div class="chip">
+                        <div class="window-bar">
+                            <div class="window-title">About</div>
+                            <div class="close-btn" data-close="about">&times;</div>
+                        </div>
+                        <div class="chip-content">
+                            <!-- About content -->
+                        </div>
+                    </div>
+                </div>
+                <div class="planet" id="projects">
+                    <div class="chip">
+                        <div class="window-bar">
+                            <div class="window-title">Projects</div>
+                            <div class="close-btn" data-close="projects">&times;</div>
+                        </div>
+                        <div class="chip-content">
+                            <!-- Projects content -->
+                        </div>
+                    </div>
+                </div>
+                <div class="planet" id="skills">
+                    <div class="chip">
+                        <div class="window-bar">
+                            <div class="window-title">Skills</div>
+                            <div class="close-btn" data-close="skills">&times;</div>
+                        </div>
+                        <div class="chip-content">
+                            <!-- Skills content -->
+                        </div>
+                    </div>
+                </div>
+                <div class="planet" id="contact">
+                    <div class="chip">
+                        <div class="window-bar">
+                            <div class="window-title">Contact</div>
+                            <div class="close-btn" data-close="contact">&times;</div>
+                        </div>
+                        <div class="chip-content">
+                            <!-- Contact content -->
+                        </div>
+                    </div>
+                </div>
+                <div class="planet" id="blog">
+                    <div class="chip">
+                        <div class="window-bar">
+                            <div class="window-title">Blog</div>
+                            <div class="close-btn" data-close="blog">&times;</div>
+                        </div>
+                        <div class="chip-content">
+                            <!-- Blog content -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="info-panel">
+            <div class="window-bar">
+                <div class="window-title">Mission Log</div>
+                <div class="close-btn">&times;</div>
+            </div>
+            <div class="mission-content">
+                <div class="progress-beam"></div>
+                <p id="mission-info">Welcome to the Cosmic Circuit Portfolio. Click on a node to begin your journey.</p>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
