@@ -6,6 +6,9 @@
     --bg-color: #000033;
     --text-color: #ffffff;
     --chip-color: rgba(26, 26, 26, 0.8);
+    --mobile-breakpoint: 768px;
+    --main-color-rgb: 0, 255, 255; /* Adjust this to match your main color */
+    --taskbar-height: 30px;
 }
 
 body, html {
@@ -15,6 +18,7 @@ body, html {
     background-color: var(--bg-color);
     color: var(--text-color);
     overflow: hidden;
+    font-size: 16px;
 }
 
 #universe {
@@ -51,20 +55,24 @@ body, html {
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    flex-direction: row;
+    flex-wrap: wrap;
     justify-content: center;
     z-index: 1000;
+    width: 90%;
+    max-width: 600px;
+    margin-bottom: 20px; /* Add space below the navigation */
 }
 
 .nav-item {
-    margin: 0 10px;
-    padding: 10px 20px;
+    margin: 5px;
+    padding: 8px 16px;
     background-color: rgba(0, 255, 255, 0.2); /* Transparent cyan */
     color: var(--main-color);
     cursor: pointer;
     transition: all 0.3s ease;
     border: 1px solid var(--main-color);
     border-radius: 5px;
+    font-size: 0.9rem;
 }
 
 .nav-item:hover {
@@ -76,10 +84,10 @@ body, html {
 
 #content-container {
     position: absolute;
-    top: 50%;
+    top: 55%; /* Adjust this value to move the content down */
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 80%;
+    width: 90%;
     height: 80%;
     max-width: 1200px;
     display: flex;
@@ -94,30 +102,127 @@ body, html {
 }
 
 .planet {
+    display: flex;
+    justify-content: center;
+    align-items: stretch; /* This will make both chips the same height */
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.chip {
+    position: absolute;
+    background: var(--chip-color);
+    border-radius: 10px;
+    border: 2px solid var(--main-color);
+    box-shadow: 0 0 20px var(--main-color);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    cursor: move; /* Indicates the window is movable */
+}
+
+.profile-chip {
+    max-width: 300px;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-chip .window-bar {
+    justify-content: center;
+}
+
+.profile-chip .chip-content {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    position: relative;
+    z-index: 1;
+    transform: scale(1.2); /* Increased zoom effect */
+    transition: transform 0.3s ease;
+}
+
+.profile-chip:hover .profile-image {
+    transform: scale(1.3); /* Further zoom on hover */
+}
+
+.lightning-border {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.lightning-border::before,
+.lightning-border::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 2px solid var(--main-color);
+    box-sizing: border-box;
+}
+
+.lightning-border::before {
+    top: -4px;
+    left: -4px;
+    animation: lightningBorder 1.5s linear infinite;
+}
+
+.lightning-border::after {
+    bottom: -4px;
+    right: -4px;
+    animation: lightningBorder 1.5s linear infinite reverse;
+}
+
+@keyframes lightningBorder {
+    0%, 100% { clip-path: inset(0 0 98% 0); }
+    25% { clip-path: inset(0 98% 0 0); }
+    50% { clip-path: inset(98% 0 0 0); }
+    75% { clip-path: inset(0 0 0 98%); }
+}
+
+.analog-scan {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 10;
+    background: linear-gradient(
+        to bottom,
+        rgba(var(--main-color-rgb), 0) 0%,
+        rgba(var(--main-color-rgb), 0.1) 50%,
+        rgba(var(--main-color-rgb), 0) 100%
+    );
+    animation: analogScan 2s linear infinite;
+    pointer-events: none;
+    z-index: 2;
 }
 
-.chip {
-    background: var(--chip-color);
-    border-radius: 10px;
-    border: 2px solid var(--main-color);
-    box-shadow: 0 0 20px var(--main-color);
-    max-width: 600px;
-    width: 100%;
-    max-height: 80vh;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+@keyframes analogScan {
+    0% {
+        transform: translateY(-100%);
+    }
+    100% {
+        transform: translateY(100%);
+    }
 }
 
 .window-bar {
@@ -127,6 +232,7 @@ body, html {
     padding: 5px 10px;
     background-color: var(--main-color);
     cursor: pointer;
+    cursor: move; /* Indicates the window bar is draggable */
 }
 
 .window-title {
@@ -145,6 +251,7 @@ body, html {
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
 }
 
 #mission-info {
@@ -243,7 +350,7 @@ body, html {
 
 #info-panel {
     position: fixed;
-    bottom: 20px;
+    bottom: calc(40px + var(--taskbar-height, 0px)); /* Adjust as needed */
     right: 20px;
     width: 250px;
     background-color: rgba(0, 0, 51, 0.7);
@@ -275,22 +382,1099 @@ body, html {
     opacity: 0;
     z-index: 100;
     box-shadow: 0 0 10px var(--main-color), 0 0 20px var(--main-color);
+    animation-duration: 2s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
 }
 
 #analog-beam-left {
     left: 0;
+    animation-name: moveBeamLeft;
 }
 
 #analog-beam-right {
     right: 0;
+    animation-name: moveBeamRight;
 }
 
 @keyframes moveBeamLeft {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(calc(50vw - 1px)); }
+    0%, 100% { opacity: 0; transform: translateX(-100%); }
+    50% { opacity: 1; transform: translateX(0); }
 }
 
 @keyframes moveBeamRight {
-    0% { transform: translateX(100%); }
-    100% { transform: translateX(calc(-50vw + 1px)); }
+    0%, 100% { opacity: 0; transform: translateX(100%); }
+    50% { opacity: 1; transform: translateX(0); }
+}
+
+/* Add these new styles for responsiveness */
+@media (max-width: 768px) {
+    body, html {
+        font-size: 14px;
+    }
+
+    #navigation {
+        top: 10px;
+    }
+
+    .nav-item {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+
+    #content-container {
+        width: 95%;
+        height: 85%;
+    }
+
+    .chip {
+        max-height: 85vh;
+    }
+
+    #info-panel {
+        width: 200px;
+        bottom: 10px;
+        right: 10px;
+    }
+
+    .planet {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .chip, .profile-chip {
+        max-width: 90%;
+        width: 100%;
+    }
+
+    .profile-image {
+        width: 150px;
+        height: 150px;
+    }
+
+    .profile-chip {
+        max-width: 250px;
+    }
+}
+
+@media (max-width: 480px) {
+    body, html {
+        font-size: 12px;
+    }
+
+    #navigation {
+        top: 5px;
+    }
+
+    .nav-item {
+        padding: 4px 8px;
+        font-size: 0.7rem;
+    }
+
+    #content-container {
+        width: 98%;
+        height: 90%;
+    }
+
+    .chip {
+        max-height: 90vh;
+    }
+
+    #info-panel {
+        width: 180px;
+        bottom: 5px;
+        right: 5px;
+    }
+}
+
+.chip-content {
+    padding: 30px;
+    overflow-y: auto;
+    max-height: calc(80vh - 50px); /* Adjust based on your window bar height */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.chip-content h2 {
+    color: var(--main-color);
+    margin-bottom: 20px;
+    font-size: 2rem;
+}
+
+.chip-content p {
+    margin-bottom: 15px;
+    line-height: 1.6;
+    max-width: 600px; /* Limit text width for better readability */
+}
+
+.chip-content a {
+    color: var(--main-color);
+    text-decoration: none;
+}
+
+.chip-content a:hover {
+    text-decoration: underline;
+}
+
+.blog-post {
+    margin-bottom: 30px;
+    max-width: 600px;
+}
+
+.blog-post h3 {
+    color: var(--main-color);
+    margin-bottom: 10px;
+}
+
+.blog-post p {
+    margin-bottom: 10px;
+}
+
+.blog-post a {
+    color: var(--main-color);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.blog-post a:hover {
+    text-decoration: underline;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: 
+        linear-gradient(to right, rgba(0, 255, 255, 0.1) 1px, transparent 1px) 0 0,
+        linear-gradient(to bottom, rgba(0, 255, 255, 0.1) 1px, transparent 1px) 0 0;
+    background-size: 10px 10px;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+        to bottom,
+        rgba(0, 255, 255, 0.2) 0%,
+        rgba(0, 255, 255, 0.4) 50%,
+        rgba(0, 255, 255, 0.2) 100%
+    );
+    border-radius: 4px;
+    border: 1px solid rgba(0, 255, 255, 0.5);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(
+        to bottom,
+        rgba(0, 255, 255, 0.3) 0%,
+        rgba(0, 255, 255, 0.6) 50%,
+        rgba(0, 255, 255, 0.3) 100%
+    );
+}
+
+/* For Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 255, 255, 0.4) rgba(0, 255, 255, 0.1);
+}
+
+/* Ensure content areas have a max-height and scroll */
+.chip-content, .mission-content {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+/* Add a glow effect to the scrollbar */
+::-webkit-scrollbar-thumb {
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+/* Add a pulsating animation to the scrollbar */
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+::-webkit-scrollbar-thumb {
+    animation: pulse 2s infinite;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .chip {
+        width: 95%;
+    }
+
+    .chip-content {
+        padding: 20px;
+    }
+
+    .chip-content h2 {
+        font-size: 1.5rem;
+    }
+
+    .profile-image, .contact-image {
+        width: 150px;
+        height: 150px;
+    }
+
+    .skills-container {
+        gap: 20px;
+    }
+
+    .skill-icon {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+.skills-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.skill {
+    background: rgba(0, 255, 255, 0.1);
+    border: 1px solid var(--main-color);
+    border-radius: 15px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: var(--main-color);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.skill::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, var(--main-color), transparent, var(--main-color));
+    z-index: -1;
+    filter: blur(5px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.skill:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+}
+
+.skill:hover::before {
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+    .skills-container {
+        gap: 10px;
+    }
+
+    .skill {
+        font-size: 0.9rem;
+        padding: 8px 16px;
+    }
+}
+
+.planet#about {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    align-items: stretch;
+    gap: 20px;
+    top: 50px;
+    left: 400px;
+}
+
+.profile-chip {
+    max-width: 300px;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-chip .window-bar {
+    justify-content: center;
+}
+
+.profile-chip .chip-content {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    position: relative;
+    z-index: 1;
+    transform: scale(1.2); /* Increased zoom effect */
+    transition: transform 0.3s ease;
+}
+
+.profile-chip:hover .profile-image {
+    transform: scale(1.3); /* Further zoom on hover */
+}
+
+.analog-scan {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        to bottom,
+        rgba(var(--main-color-rgb), 0) 0%,
+        rgba(var(--main-color-rgb), 0.1) 50%,
+        rgba(var(--main-color-rgb), 0) 100%
+    );
+    animation: analogScan 2s linear infinite;
+    pointer-events: none;
+    z-index: 2;
+}
+
+@keyframes analogScan {
+    0% {
+        transform: translateY(-100%);
+    }
+    100% {
+        transform: translateY(100%);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .planet#about {
+        flex-direction: column;
+    }
+    
+    .profile-chip {
+        max-width: 250px;
+    }
+}
+
+.skills-chip {
+    top: 400px;
+    left: 50px;
+}
+
+.profile-chip {
+    top: 50px;
+    left: 50px;
+}
+
+.about-chip {
+    top: 50px;
+    left: 400px;
+}
+
+.skills-chip {
+    top: 400px;
+    left: 50px;
+}
+
+.skills-chip {
+    top: 400px;
+    left: 50px;
+}
+
+.chip {
+    position: absolute;
+    background: var(--chip-color);
+    border-radius: 10px;
+    border: 2px solid var(--main-color);
+    box-shadow: 0 0 20px var(--main-color);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.window-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: var(--main-color);
+    cursor: pointer;
+}
+
+.window-title {
+    color: var(--bg-color);
+    font-weight: bold;
+}
+
+.draggable {
+    cursor: move;
+    flex-grow: 1;
+}
+
+.close-btn {
+    color: var(--bg-color);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+#desktop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--bg-color);
+    overflow: hidden;
+}
+
+#window-container {
+    position: relative;
+    width: 100%;
+    height: calc(100% - 40px);
+}
+
+.window {
+    position: absolute;
+    background: var(--chip-color);
+    border: 2px solid var(--main-color);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(var(--main-color-rgb), 0.5);
+    display: flex;
+    flex-direction: column;
+    min-width: 300px;
+    min-height: 200px;
+}
+
+.window-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: var(--main-color);
+    cursor: move;
+    user-select: none;
+}
+
+.window-title {
+    color: var(--bg-color);
+    font-weight: bold;
+}
+
+.window-controls {
+    display: flex;
+    align-items: center;
+}
+
+.window-controls button {
+    background: none;
+    border: none;
+    color: var(--bg-color);
+    font-size: 16px;
+    cursor: pointer;
+    margin-left: 5px;
+    padding: 0 5px;
+    line-height: 1;
+}
+
+.window-content {
+    flex-grow: 1;
+    overflow: auto;
+    padding: 10px;
+}
+
+.resize-handle {
+    position: absolute;
+    background: transparent;
+    z-index: 10;
+}
+
+.resize-handle.top-left,
+.resize-handle.top-right,
+.resize-handle.bottom-left,
+.resize-handle.bottom-right {
+    width: 10px;
+    height: 10px;
+}
+
+.resize-handle.top,
+.resize-handle.bottom {
+    left: 10px;
+    right: 10px;
+    height: 5px;
+}
+
+.resize-handle.left,
+.resize-handle.right {
+    top: 10px;
+    bottom: 10px;
+    width: 5px;
+}
+
+.resize-handle.top-left { top: -5px; left: -5px; cursor: nwse-resize; }
+.resize-handle.top-right { top: -5px; right: -5px; cursor: nesw-resize; }
+.resize-handle.bottom-left { bottom: -5px; left: -5px; cursor: nesw-resize; }
+.resize-handle.bottom-right { bottom: -5px; right: -5px; cursor: nwse-resize; }
+.resize-handle.top { top: -5px; cursor: ns-resize; }
+.resize-handle.right { right: -5px; cursor: ew-resize; }
+.resize-handle.bottom { bottom: -5px; cursor: ns-resize; }
+.resize-handle.left { left: -5px; cursor: ew-resize; }
+
+#taskbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    background: var(--main-color);
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+}
+
+#start-menu {
+    margin-right: 10px;
+}
+
+#add-window {
+    background: none;
+    border: none;
+    color: var(--bg-color);
+    font-size: 24px;
+    cursor: pointer;
+}
+
+#open-windows {
+    display: flex;
+    gap: 10px;
+}
+
+.taskbar-item {
+    background: rgba(var(--bg-color-rgb), 0.2);
+    color: var(--bg-color);
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#mission-log {
+    font-family: 'Courier New', monospace;
+    color: var(--main-color);
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    border-radius: 5px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#log-entries {
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.log-entry {
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+.timestamp {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+#log-progress {
+    height: 5px;
+    background-color: rgba(255, 255, 255, 0.2);
+    margin-top: 10px;
+}
+
+#log-beam {
+    height: 100%;
+    width: 0;
+    background-color: var(--main-color);
+    transition: width 0.5s ease-in-out;
+}
+
+#mission-log-window {
+    position: fixed;
+    bottom: 50px;
+    right: 10px;
+    width: 300px;
+    height: 200px;
+    background: var(--chip-color);
+    border: 2px solid var(--main-color);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(var(--main-color-rgb), 0.5);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 1000;
+}
+
+#mission-log-window .window-header {
+    padding: 5px 10px;
+    background-color: var(--main-color);
+    color: var(--bg-color);
+    font-weight: bold;
+}
+
+#mission-log {
+    flex-grow: 1;
+    padding: 10px;
+    font-family: 'Courier New', monospace;
+    color: var(--main-color);
+    background-color: rgba(0, 0, 0, 0.7);
+    font-size: 12px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.log-entry {
+    text-align: center;
+}
+
+.timestamp {
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.progress-beam {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 5px;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.progress-beam::before {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: var(--main-color);
+    border-radius: 50%;
+    box-shadow: 0 0 5px var(--main-color), 0 0 10px var(--main-color);
+    animation: snakeProgress 8s linear infinite;
+    top: var(--beam-y, 0);
+    left: var(--beam-x, 0);
+}
+
+.progress-beam::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        linear-gradient(to right, var(--main-color) 50%, transparent 50%) top/200% 2px no-repeat,
+        linear-gradient(to bottom, var(--main-color) 50%, transparent 50%) right/2px 200% no-repeat,
+        linear-gradient(to left, var(--main-color) 50%, transparent 50%) bottom/200% 2px no-repeat,
+        linear-gradient(to top, var(--main-color) 50%, transparent 50%) left/2px 200% no-repeat;
+    animation: progress 4s linear infinite;
+}
+
+.analog-scan {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        to bottom,
+        rgba(var(--main-color-rgb), 0) 0%,
+        rgba(var(--main-color-rgb), 0.1) 50%,
+        rgba(var(--main-color-rgb), 0) 100%
+    );
+    animation: analogScan 2s linear infinite;
+    pointer-events: none;
+    z-index: 2;
+}
+
+@keyframes snakeProgress {
+    0% { top: 0; left: 0; width: 10px; height: 10px; }
+    12.5% { top: 0; left: calc(100% - 10px); width: 10px; height: 10px; }
+    25% { top: 0; left: calc(100% - 10px); width: 10px; height: calc(100% - 10px); }
+    37.5% { top: calc(100% - 10px); left: calc(100% - 10px); width: 10px; height: calc(100% - 10px); }
+    50% { top: calc(100% - 10px); left: 0; width: calc(100% - 10px); height: 10px; }
+    62.5% { top: 0; left: 0; width: calc(100% - 10px); height: 10px; }
+    75% { top: 0; left: 0; width: 10px; height: calc(100% - 10px); }
+    87.5% { top: calc(100% - 10px); left: 0; width: 10px; height: calc(100% - 10px); }
+    100% { top: calc(100% - 10px); left: calc(100% - 10px); width: calc(100% - 10px); height: calc(100% - 10px); }
+}
+
+@keyframes progress {
+    0% {
+        background-position: 200% 0, 100% 200%, -100% 100%, 0 -100%;
+    }
+    100% {
+        background-position: -200% 0, 100% -200%, 100% 100%, 0 100%;
+    }
+}
+
+@keyframes analogScan {
+    0% {
+        transform: translateY(-100%);
+    }
+    100% {
+        transform: translateY(100%);
+    }
+}
+
+/* Center align content in window body */
+.chip-content, .mission-content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Center align paragraphs */
+.chip-content p, .mission-content p {
+    text-align: center;
+    max-width: 600px; /* Limit width for better readability */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Center align headings */
+.chip-content h1, .chip-content h2, .chip-content h3, .chip-content h4, .chip-content h5, .chip-content h6,
+.mission-content h1, .mission-content h2, .mission-content h3, .mission-content h4, .mission-content h5, .mission-content h6 {
+    text-align: center;
+    width: 100%;
+}
+
+/* Center align images */
+.chip-content img, .mission-content img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Center align lists */
+.chip-content ul, .chip-content ol,
+.mission-content ul, .mission-content ol {
+    display: inline-block;
+    text-align: left; /* Keep list items left-aligned */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Ensure inline elements like buttons are centered */
+.chip-content > *, .mission-content > * {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Center align text in all windows */
+.chip-content, .mission-content, .planet {
+    text-align: center;
+}
+
+/* Ensure inline elements like buttons are centered */
+.chip-content > *, .mission-content > *, .planet > * {
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Center align headings */
+h1, h2, h3, h4, h5, h6 {
+    text-align: center;
+}
+
+/* Center align paragraphs */
+p {
+    text-align: center;
+    max-width: 600px; /* Limit width for better readability */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Center align lists */
+ul, ol {
+    display: inline-block;
+    text-align: left; /* Keep list items left-aligned */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Center align images */
+img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Center align form elements */
+form {
+    text-align: center;
+}
+
+input, textarea, button {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.left-align {
+    text-align: left;
+    align-self: flex-start;
+}
+
+.right-align {
+    text-align: right;
+    align-self: flex-end;
+}
+
+#window-container .profile-chip {
+    width: 300px; /* Set a fixed width */
+    height: 300px; /* Set a fixed height to make it square */
+    background-color: var(--chip-color);
+    border: 1px solid var(--main-color);
+    border-radius: 10px; /* Optional: Add some rounding to the corners */
+    overflow: hidden;
+    position: absolute; /* Use absolute positioning to center */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Center the window */
+    box-shadow: 0 0 10px rgba(var(--main-color-rgb), 0.5);
+}
+
+.profile-chip .window-bar {
+    background-color: var(--main-color);
+    color: var(--text-color);
+    padding: 5px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.profile-chip .chip-content {
+    padding: 10px;
+    overflow-y: auto; /* Allow scrolling if content overflows */
+    height: calc(100% - 30px); /* Adjust height to account for window bar */
+}
+
+#window-container .window {
+    width: 350px; /* Set a fixed width */
+    height: 350px; /* Set a fixed height */
+    background-color: var(--chip-color);
+    border: 1px solid var(--main-color);
+    border-radius: 10px; /* Optional: Add some rounding to the corners */
+    overflow: hidden;
+    position: absolute; /* Use absolute positioning for dynamic placement */
+    box-shadow: 0 0 10px rgba(var(--main-color-rgb), 0.5);
+}
+
+.profile-chip {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Center the profile window */
+}
+
+.window-bar {
+    background-color: var(--main-color);
+    color: var(--text-color);
+    padding: 5px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.chip-content {
+    padding: 10px;
+    overflow-y: auto; /* Allow scrolling if content overflows */
+    height: calc(100% - 30px); /* Adjust height to account for window bar */
+}
+
+.profile-info {
+    padding: 10px;
+    color: var(--text-color);
+    font-size: 0.9rem;
+}
+
+.profile-info h2, .profile-info h3 {
+    margin: 10px 0 5px;
+    color: var(--main-color);
+}
+
+.profile-info p, .profile-info ul {
+    margin: 5px 0;
+}
+
+.profile-info ul {
+    padding-left: 20px;
+    list-style-type: disc;
+}
+
+.about-info {
+    padding: 10px;
+    color: var(--text-color);
+    font-size: 0.9rem;
+}
+
+.about-info h2, .about-info h3 {
+    margin: 10px 0 5px;
+    color: var(--main-color);
+}
+
+.about-info p, .about-info ul {
+    margin: 5px 0;
+}
+
+.about-info ul {
+    padding-left: 20px;
+    list-style-type: disc;
+}
+
+.contact-info {
+    padding: 10px;
+    color: var(--text-color);
+    font-size: 0.9rem;
+}
+
+.contact-info h3 {
+    margin-bottom: 10px;
+    color: var(--main-color);
+}
+
+.contact-info p {
+    margin: 5px 0;
+}
+
+.contact-info a {
+    color: var(--accent-color);
+    text-decoration: none;
+}
+
+.contact-info a:hover {
+    text-decoration: underline;
+}
+
+.projects-info {
+    padding: 10px;
+    color: var(--text-color);
+    font-size: 0.9rem;
+}
+
+.projects-info h2, .projects-info h3 {
+    margin: 10px 0 5px;
+    color: var(--main-color);
+}
+
+.projects-info p, .projects-info ul {
+    margin: 5px 0;
+}
+
+.projects-info ul {
+    padding-left: 20px;
+    list-style-type: disc;
+}
+
+.project h2 {
+    color: var(--main-color);
+    margin: 10px 0 5px;
+}
+
+.project p {
+    margin: 5px 0;
+    color: var(--text-color);
+}
+
+/* Base styles for larger screens */
+body, html {
+    font-size: 16px;
+}
+
+#navigation {
+    width: 90%;
+    max-width: 600px;
+}
+
+#window-container .window {
+    width: 350px;
+    height: 350px;
+}
+
+/* Responsive styles for tablets and smaller screens */
+@media (max-width: 1024px) {
+    #navigation {
+        width: 100%;
+        padding: 0 10px;
+    }
+
+    #window-container .window {
+        width: 300px;
+        height: 300px;
+    }
+}
+
+/* Responsive styles for mobile devices */
+@media (max-width: 768px) {
+    body, html {
+        font-size: 14px;
+    }
+
+    #navigation {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .nav-item {
+        width: 100%;
+        text-align: center;
+        margin: 5px 0;
+    }
+
+    #window-container .window {
+        width: 90%;
+        height: auto;
+        max-width: 300px;
+    }
+
+    .profile-chip {
+        width: 90%;
+        max-width: 300px;
+    }
+}
+
+/* Additional styles for very small screens */
+@media (max-width: 480px) {
+    body, html {
+        font-size: 12px;
+    }
+
+    #window-container .window {
+        width: 100%;
+        height: auto;
+        max-width: 250px;
+    }
+
+    .profile-chip {
+        width: 100%;
+        max-width: 250px;
+    }
 }

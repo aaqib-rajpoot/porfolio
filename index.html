@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cosmic Circuit Portfolio</title>
+    <title>Your Name - Cosmic Circuit Portfolio</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -18,81 +18,32 @@
         <div id="analog-beam-right" class="analog-beam"></div>
         
         <nav id="navigation">
-            <div class="nav-item" data-planet="about">About</div>
-            <div class="nav-item" data-planet="projects">Projects</div>
-            <div class="nav-item" data-planet="skills">Skills</div>
-            <div class="nav-item" data-planet="contact">Contact</div>
-            <div class="nav-item" data-planet="blog">Blog</div>
+            <div class="nav-item" data-window="profile">Profile</div>
+            <div class="nav-item" data-window="about">About</div>
+            <div class="nav-item" data-window="skills">Skills</div>
+            <div class="nav-item" data-window="projects">Projects</div>
+            <div class="nav-item" data-window="contact">Contact</div>
         </nav>
 
-        <div id="content-container">
-            <div id="content-area">
-                <div class="planet" id="about">
-                    <div class="chip">
-                        <div class="window-bar">
-                            <div class="window-title">About</div>
-                            <div class="close-btn" data-close="about">&times;</div>
-                        </div>
-                        <div class="chip-content">
-                            <!-- About content -->
-                        </div>
-                    </div>
+        <div id="desktop">
+            <div id="window-container">
+                <!-- Windows will be dynamically added here -->
+            </div>
+            <div id="info-panel">
+                <div class="window-bar">
+                    <div class="window-title">Mission Log</div>
+                    <div class="close-btn">&times;</div>
                 </div>
-                <div class="planet" id="projects">
-                    <div class="chip">
-                        <div class="window-bar">
-                            <div class="window-title">Projects</div>
-                            <div class="close-btn" data-close="projects">&times;</div>
-                        </div>
-                        <div class="chip-content">
-                            <!-- Projects content -->
-                        </div>
-                    </div>
-                </div>
-                <div class="planet" id="skills">
-                    <div class="chip">
-                        <div class="window-bar">
-                            <div class="window-title">Skills</div>
-                            <div class="close-btn" data-close="skills">&times;</div>
-                        </div>
-                        <div class="chip-content">
-                            <!-- Skills content -->
-                        </div>
-                    </div>
-                </div>
-                <div class="planet" id="contact">
-                    <div class="chip">
-                        <div class="window-bar">
-                            <div class="window-title">Contact</div>
-                            <div class="close-btn" data-close="contact">&times;</div>
-                        </div>
-                        <div class="chip-content">
-                            <!-- Contact content -->
-                        </div>
-                    </div>
-                </div>
-                <div class="planet" id="blog">
-                    <div class="chip">
-                        <div class="window-bar">
-                            <div class="window-title">Blog</div>
-                            <div class="close-btn" data-close="blog">&times;</div>
-                        </div>
-                        <div class="chip-content">
-                            <!-- Blog content -->
-                        </div>
-                    </div>
+                <div class="mission-content">
+                    <div class="progress-beam"></div>
+                    <p id="mission-info">Welcome to the Portfolio. Click on a Menu Button to begin your journey. Drag and Drop any window to move it around.</p>
                 </div>
             </div>
-        </div>
-
-        <div id="info-panel">
-            <div class="window-bar">
-                <div class="window-title">Mission Log</div>
-                <div class="close-btn">&times;</div>
-            </div>
-            <div class="mission-content">
-                <div class="progress-beam"></div>
-                <p id="mission-info">Welcome to the Cosmic Circuit Portfolio. Click on a node to begin your journey.</p>
+            <div id="taskbar">
+                <div id="start-menu">
+                    <button id="add-window">+</button>
+                </div>
+                <div id="open-windows"></div>
             </div>
         </div>
     </div>
